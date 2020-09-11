@@ -1,9 +1,21 @@
 require("dotenv").config();
 const { URL } = require("url");
 const fetch = require("node-fetch");
-const movies = require("../data/movies.json");
+const { query } = require("./utils/hasura");
 
 exports.handler = async () => {
+  const { movies } = await query({
+    query: `
+      query {
+        movies {
+          id
+          title
+          tagline
+          poster
+        }
+      }
+    `,
+  });
   const api = new URL("https://www.omdbapi.com/");
   // add the secret api
   api.searchParams.set("apikey", process.env.OMDB_API_KEY);
